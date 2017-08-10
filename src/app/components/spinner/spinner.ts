@@ -251,7 +251,14 @@ export class Spinner implements OnInit,ControlValueAccessor {
             let textValue = String(this.value).replace('.', this.decimalSeparator);
             
             if(this.formatInput) {
-                textValue = textValue.replace(/\B(?=(\d{3})+(?!\d))/g, this.thousandSeparator);
+                // check for regex escape characters
+                let shouldEscape = /[\.\\\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:\-]/.test(this.decimalSeparator);
+                // match up to the decimalSeparator, escaping if necessary
+                let numParts = textValue.match(new RegExp("^[^" + (shouldEscape ? "\\" : "") + this.decimalSeparator + "]*"));
+  
+                if(numParts.length > 0) {
+                    textValue = textValue.replace(numParts[0], numParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, this.thousandSeparator));
+                }
             }
             this.valueAsString = textValue;
         }
