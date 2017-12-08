@@ -9,24 +9,27 @@
     <p-growl [value]="msgs"></p-growl>
     
     <h3 class="first">Basic</h3>
-    <p-tree [value]="filesTree1"></p-tree>
+    <p-tree [value]="filesTree0"></p-tree>
+    
+    <h3>Loader</h3>
+    <p-tree [value]="filesTree1" [loading]="loading"></p-tree>
 
     <h3>Single Selection</h3>
     <p-tree [value]="filesTree2" selectionMode="single" [(selection)]="selectedFile" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-tree>
-    <div style="margin-top:8px">Selected Node: {{selectedFile ? selectedFile.label : 'none'&#125;&#125;</div>
+    <div style="margin-top:8px">Selected Node: {{selectedFile ? selectedFile.label : 'none'}}</div>
     
     <h3>Multiple Selection with Metakey</h3>
     <p-tree [value]="filesTree3" selectionMode="multiple" [(selection)]="selectedFiles" 
         (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnselect($event)"></p-tree>
-    <div>Selected Nodes: <span *ngFor="let file of selectedFiles">{{file.label&#125;&#125; </span></div>
+    <div>Selected Nodes: <span *ngFor="let file of selectedFiles">{{file.label}}</span></div>
     
     <h3>Multiple Selection with Checkbox</h3>
     <p-tree [value]="filesTree4" selectionMode="checkbox" [(selection)]="selectedFiles2"></p-tree>
-    <div>Selected Nodes: <span *ngFor="let file of selectedFiles2">{{file.label&#125;&#125; </span></div>
+    <div>Selected Nodes: <span *ngFor="let file of selectedFiles2">{{file.label}}</span></div>
 
     <h3>Lazy Loading</h3>
-    <p-tree [value]="lazyFiles" (onNodeExpand)="nodeExpand($event)" [style]="&#123;'max-height':'200px','overflow':'auto'&#125;"></p-tree>
+    <p-tree [value]="lazyFiles" (onNodeExpand)="nodeExpand($event)" [style]="{'max-height':'200px','overflow':'auto'}"></p-tree>
     
     <h3>Template</h3>
     <p-tree [value]="filesTree5">
@@ -331,7 +334,8 @@ export class TreeDemoComponent implements OnInit &#123;
 
         <p>In multiple mode or checkbox mode, selection property should be an array. In multiple mode, items can either be selected
         using metaKey or toggled individually depending on the value of metaKeySelection property value which is true by default. On touch enabled
-        devices metaKeySelection is turned off automatically.</p>
+        devices metaKeySelection is turned off automatically. In checkbox mode, when inititing a tree with preselections, also set partialSelected
+        property on node so that minus icon can be displayed when necessary.</p>
 <pre>
 <code class="language-typescript" pCode ngNonBindable>
     export class TreeDemoComponent implements OnInit &#123;
@@ -356,7 +360,7 @@ export class TreeDemoComponent implements OnInit &#123;
 </code>
 </pre>
 
-            <p>In checkbox mode, selections propagate up and down, if you prefer not to do so, propagation can be turned of by propapageSelectionDown and
+            <p>In checkbox mode, selections propagate up and down, if you prefer not to do so, propagation can be turned off by propagateSelectionDown and
             propagateSelectionUp properties.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
@@ -414,7 +418,7 @@ export class TreeDemoComponent implements OnInit &#123;
 </code>
 </pre>
 
-            <p>Multiple templates are supported by matching the type property of the TreeNode with the type of pTemplate. If a node as no type, 
+            <p>Multiple templates are supported by matching the type property of the TreeNode with the type of pTemplate. If a node has no type, 
             then default ng-template is used.</p>
 <pre>
 <code class="language-markup" pCode ngNonBindable>
@@ -522,7 +526,7 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
 &lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true"&gt;&lt;/p-tree&gt;
 </code>
 </pre>
-            <p>Multiple tree can be used in a drag drop operation, in order to add constraints like rejecting drags from a certain tree but allow from another use draggableScope 
+            <p>Multiple trees can be used in a drag drop operation, in order to add constraints like rejecting drags from a certain tree but allow from another use draggableScope 
             and droppableScope properties which can be a string or an array. Following example uses 3 trees where second one only accepts drags from first tree and second one only
             accepts from second tree whereas first tree accepts drops from 3rd tree.</p>
 <pre>
@@ -530,6 +534,15 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
 &lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="a" droppableScope="c"&gt;&lt;/p-tree&gt;
 &lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="b" droppableScope="a"&gt;&lt;/p-tree&gt;
 &lt;p-tree [value]="files" draggableNodes="true" droppableNodes="true" draggableScope="c" droppableScope="b"&gt;&lt;/p-tree&gt;
+</code>
+</pre>
+
+            <h3>Loading Status</h3>
+            <p>Tree has a loading property, when enabled a spinner icon is displayed to indicate data load.</p>
+            <p>An optional loadingIcon property can be passed in case you prefer a different icon.</p>
+<pre>
+<code class="language-markup" pCode ngNonBindable>
+&lt;p-tree [value]="files" [loading]="loading"&gt;&lt;/p-tree&gt;
 </code>
 </pre>
             
@@ -591,7 +604,7 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
                             <td>Context menu instance.</td>
                         </tr>
                         <tr>
-                            <td>orientation</td>
+                            <td>layout</td>
                             <td>string</td>
                             <td>vertical</td>
                             <td>Defines the orientation of the tree, valid values are 'vertical' and 'horizontal'.</td>
@@ -614,6 +627,18 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
                             <td>boolean</td>
                             <td>true</td>
                             <td>Whether checkbox selections propagate to descendant nodes.</td>
+                        </tr>
+                        <tr>
+                            <td>loading</td>
+                            <td>boolean</td>
+                            <td>false</td>
+                            <td>Displays a loader to indicate data load is in progress.</td>
+                        </tr>
+                        <tr>
+                            <td>loadingIcon</td>
+                            <td>string</td>
+                            <td>fa-circle-o-notch</td>
+                            <td>The icon to show while indicating data load is in progress.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -741,7 +766,10 @@ import &#123;TreeDragDropService&#125; from 'primeng/primeng';
 &lt;p-growl [value]="msgs"&gt;&lt;/p-growl&gt;
 
 &lt;h3 class="first"&gt;Basic&lt;/h3&gt;
-&lt;p-tree [value]="filesTree1"&gt;&lt;/p-tree&gt;
+&lt;p-tree [value]="filesTree0"&gt;&lt;/p-tree&gt;
+
+&lt;h3&gt;Loader&lt;/h3&gt;
+&lt;p-tree [value]="filesTree1" [loading]="loading"&gt;&lt;/p-tree&gt;
 
 &lt;h3&gt;Single Selection&lt;/h3&gt;
 &lt;p-tree [value]="filesTree2" selectionMode="single" [(selection)]="selectedFile" 
@@ -848,11 +876,18 @@ export class TreeDemo implements OnInit &#123;
     selectedFiles2: TreeNode[];
     
     items: MenuItem[];
+    
+    loading: boolean;
         
     constructor(private nodeService: NodeService) &#123; &#125;
 
     ngOnInit() &#123;
-        this.nodeService.getFiles().then(files => this.filesTree1 = files);
+        this.loading = true;
+        this.nodeService.getFiles().then(files => this.filesTree0 = files);
+        setTimeout(() => {
+            this.nodeService.getFiles().then(files => this.filesTree1 = files);
+            this.loading = false;
+        }, 3000);
         this.nodeService.getFiles().then(files => this.filesTree2 = files);
         this.nodeService.getFiles().then(files => this.filesTree3 = files);
         this.nodeService.getFiles().then(files => this.filesTree4 = files);
