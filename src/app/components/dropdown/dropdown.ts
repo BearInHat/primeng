@@ -448,10 +448,9 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
             return;
         }
 
-        const keyCode = event.keyCode || event.which;
         let selectedItemIndex = this.selectedOption ? this.findOptionIndex(this.selectedOption.value, this.optionsToDisplay) : -1;
 
-        switch(keyCode) {
+        switch(event.which) {
             //down
             case 40:
                 if(!this.panelVisible && event.altKey) {
