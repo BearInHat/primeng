@@ -162,8 +162,6 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
 
     public panelVisible: boolean = false;
 
-    public isShowing: boolean;
-
     public shown: boolean;
 
     public documentClickListener: any;
@@ -417,12 +415,10 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
         this.panel.style.zIndex = String(++DomHandler.zindex);
         this.panelVisible = true;
         this.shown = true;
-        this.isShowing = true;
     }
 
     hide() {
         this.panelVisible = false;
-        this.isShowing = false;
 
         if(this.filter && this.resetFilterOnHide) {
             this.resetFilter();
@@ -511,8 +507,9 @@ export class Dropdown implements OnInit,AfterViewInit,AfterContentInit,AfterView
             return;
         }
 
-        if (this.isShowing || this.filterViewChild == undefined) return;
-        const inputChar = String.fromCharCode(keyCode);
+        // When filtering is active, begin filtering upon typing.
+        if (this.panelVisible || this.filterViewChild == undefined) return;
+        const inputChar = String.fromCharCode(event.which);
         const alphaNumeric = /[A-Za-z0-9]/;
         if (alphaNumeric.test(inputChar)) {
             this.show();
